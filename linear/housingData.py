@@ -1,7 +1,14 @@
+###################################
+#CS 434 Implementation Assignment 1
+#Logan Wingard
+#Daniel Ross
+###################################
+
+
 import numpy as np
 
+#loadData with d added features 
 def adFeature(filename, d):
-	
 	x = []
 	y = []
 	temp = []
@@ -23,6 +30,8 @@ def adFeature(filename, d):
 	x1 = np.matrix(x)
 	y1 = np.matrix(y)
 	return x1,y1
+	
+	
 #loadData w/out dummy var
 def loadData2(filename):
 	x = []
@@ -40,22 +49,23 @@ def loadData2(filename):
 	y1 = np.matrix(y)
 	return x1,y1
 
+
 #loadData with dummy var
 def loadData(filename):
 	x = []
 	y = []
 	temp = []
 	with open(filename) as f:
-		lines = f.read().split()
+		lines = f.read().split()			#lines = list of every data point
 	for count in range (0,len(lines)):
-		if (count+1) % 14 == 0:
+		if (count+1) % 14 == 0:				#if position is 14(y value) append to y
 			y.append([float(lines[count])])
-		else:
+		else:								#else (if first position append a dummy '1') append to temp
 			if (count+1) % 14 == 1:
 				temp.append(1.)
 			temp.append(float(lines[count]))
-	x = [temp[i:i+14] for i in range(0,len(temp),14)]
-	x1 = np.matrix(x)
+	x = [temp[i:i+14] for i in range(0,len(temp),14)]		#splitting x into a list of lists separated by each instance
+	x1 = np.matrix(x)						#converting x and y from lists of lists to matrices
 	y1 = np.matrix(y)
 	return x1,y1
 
@@ -91,15 +101,15 @@ print "Average error without dummy variable:"
 print error
 
 ##################################################
-#Again withdummy variable and added features
+#Again with dummy variable and added features
 ##################################################
-
-x,y = adFeature('./housing_train.txt',2)
+numFeat = 2
+x,y = adFeature('./housing_train.txt',numFeat)
 w = np.matrix([])
 w = (x.T * x).I * x.T * y
 
 
-x,y = adFeature('./housing_test.txt',2)
+x,y = adFeature('./housing_test.txt',numFeat)
 error = 0
 for i in range (len(y)):
 	error += float((y[i] - x[i]*w))
