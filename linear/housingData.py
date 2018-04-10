@@ -80,7 +80,6 @@ print error
 x,y = loadData2('./housing_train.txt')
 w = np.matrix([])
 w = (x.T * x).I * x.T * y
-#print w
 
 
 x,y = loadData2('./housing_test.txt')
@@ -98,7 +97,6 @@ print error
 x,y = adFeature('./housing_train.txt',2)
 w = np.matrix([])
 w = (x.T * x).I * x.T * y
-#print w
 
 
 x,y = adFeature('./housing_test.txt',2)
