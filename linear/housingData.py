@@ -103,7 +103,7 @@ print error
 ##################################################
 #Again with dummy variable and added features
 ##################################################
-numFeat = 2
+numFeat = 200
 x,y = adFeature('./housing_train.txt',numFeat)
 w = np.matrix([])
 w = (x.T * x).I * x.T * y

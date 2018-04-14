@@ -37,7 +37,7 @@ while (cont):
 		gradient = gradient + ((ytarget - y1[i]))* x1[i]
 	w = w - (eta*gradient)
 	itr +=1
-	cont = (itr < 100)
+	cont = (itr < 4000)
 
 x = []
 y = []
