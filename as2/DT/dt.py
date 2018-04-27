@@ -45,10 +45,9 @@ def loadCSV(fileName):
 	return x1,y1
 	
 	
-def DT(filename):
-	tHold = []
+def DT():
 	maxGain = [0,0,0]
-	x,y = loadCSV(filename)
+	x,y = loadCSV("knn_train.csv")
 	parent = np.count_nonzero(y == 1)				#number of 1's in y
 	pEntrop = entrop(parent, len(y))
 	for j in range(0,30):
@@ -63,11 +62,25 @@ def DT(filename):
 			gain = float(pEntrop - float((float(len(tempy[:len(tempy)-i]))/len(y)))*ch1Entrop) + (float(float(len(tempy[i:]))/len(y))*ch2Entrop)
 			
 			if gain > maxGain[0]:
-				print i
 				maxGain = [gain,i,j]
-	print maxGain
-		
-DT("knn_train.csv")
+	tempx,tempy = sortByFeature(x,y,maxGain[2])
+	threshold = tempx[maxGain[1],maxGain[2]]
+	#print threshold
+	x,y = loadCSV("knn_test.csv")
+	x,y = sortByFeature(x,y,maxGain[2])
+	good = 0
+	bad = 0
+	print y[31]
+	for i in range(0,len(y)):
+		if (float(x[i,maxGain[2]]) >= float(threshold)) and (float(y[i]) == 1): 
+			good+= 1
+		elif (float(x[i,maxGain[2]]) <= float(threshold)) and (float(y[i]) != 1): 
+			good+= 1
+		else:
+			bad+= 1
+	print "accuracy: "
+	print float(good/float(good+bad))
+DT()
 '''
 print "PRE SORTED:"
 for i in range(0,len(y)):
