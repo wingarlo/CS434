@@ -70,7 +70,6 @@ def DT():
 	x,y = sortByFeature(x,y,maxGain[2])
 	good = 0
 	bad = 0
-	print y[31]
 	for i in range(0,len(y)):
 		if (float(x[i,maxGain[2]]) >= float(threshold)) and (float(y[i]) == 1): 
 			good+= 1
@@ -78,7 +77,21 @@ def DT():
 			good+= 1
 		else:
 			bad+= 1
-	print "accuracy: "
+	print "accuracy on testing data: "
+	print float(good/float(good+bad))
+	
+	x,y = loadCSV("knn_train.csv")
+	x,y = sortByFeature(x,y,maxGain[2])
+	good = 0
+	bad = 0
+	for i in range(0,len(y)):
+		if (float(x[i,maxGain[2]]) >= float(threshold)) and (float(y[i]) == 1): 
+			good+= 1
+		elif (float(x[i,maxGain[2]]) <= float(threshold)) and (float(y[i]) != 1): 
+			good+= 1
+		else:
+			bad+= 1
+	print "accuracy on training data: "
 	print float(good/float(good+bad))
 DT()
 '''
