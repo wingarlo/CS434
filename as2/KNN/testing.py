@@ -70,7 +70,7 @@ def main():
 	predictions = []
 	numExamples = len(z)
 	numSamples = len(zt)
-	for k in range(1,60):
+	for k in range(1,52):
 		print "K: "+repr(k)
 		results.append([])
 		predictions = []
@@ -116,6 +116,10 @@ def main():
 			else:
 				wrong+=1.0
 		results[k-1].append(wrong)
+	with open('KNNresults.csv','wb') as csvout:
+		output = csv.writer(csvout, delimiter=',')
+		for q in range(len(results)):
+			output.writerow([results[q][0]]+[results[q][1]]+[results[q][2]])
 	return results
 
 print main()
