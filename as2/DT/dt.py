@@ -63,12 +63,11 @@ def DT():
 			ch1Entrop = entrop(ch1,len(tempy[:len(tempy)-i]))
 			ch2Entrop = entrop(ch2,len(tempy[i:]))
 			gain = float(pEntrop - float((float(len(tempy[:len(tempy)-i]))/len(y)))*ch1Entrop) + (float(float(len(tempy[i:]))/len(y))*ch2Entrop)
-			
 			if gain > maxGain[0]:
 				maxGain = [gain,i,j]
+				
 	tempx,tempy = sortByFeature(x,y,maxGain[2])
 	threshold = tempx[maxGain[1],maxGain[2]]
-	#print threshold
 	x,y = loadCSV("knn_test.csv")
 	x,y = sortByFeature(x,y,maxGain[2])
 	good = 0
@@ -80,7 +79,7 @@ def DT():
 			good+= 1
 		else:
 			bad+= 1
-	print "accuracy on testing data: "
+	print "accuracy on testing data using decision stump: "
 	print float(good/float(good+bad))
 	
 	x,y = loadCSV("knn_train.csv")
@@ -94,7 +93,7 @@ def DT():
 			good+= 1
 		else:
 			bad+= 1
-	print "accuracy on training data: "
+	print "accuracy on training data using decision stump: "
 	print float(good/float(good+bad))
 	
 def recurDT(x,y,d):
@@ -157,7 +156,7 @@ def DeepTree(d):
 				good+= 1
 			else:
 				bad+= 1
-	print "accuracy on testing data: "
+	print "accuracy on testing data using Decision tree of depth", d
 	print float(good/float(good+bad))
 
 	x,y = loadCSV("knn_train.csv")
@@ -180,7 +179,11 @@ def DeepTree(d):
 				good+= 1
 			else:
 				bad+= 1
-	print "accuracy on training data: "
+	print "accuracy on training data using Decision tree of depth", d
 	print float(good/float(good+bad))
+	
+d = 5
+if len(sys.argv) > 1:
+	d = int(sys.argv[1])
 DT()
-DeepTree(12)
+DeepTree(d)
