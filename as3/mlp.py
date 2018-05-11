@@ -9,30 +9,35 @@ import numpy as np
 
 cuda = torch.cuda.is_available()
 
+def unpickle(file):
+	import cPickle
+	with open(file, 'rb') as fo:
+		dict = cPickle.load(fo)
+	return dict
+
+dict = torch.Tensor(unpickle("./data/data_batch_1")["data"])
+dict = torch.utils.data.TensorDataset(dict)
+#print type(dict)
 batch_size = 32
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if cuda else {}
 
 train_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('./data', train=True, download=True,
-                   transform=transforms.Compose([
-                       transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
-                   ])),
+    dict,
     batch_size=batch_size, shuffle=True, **kwargs)
 
+
 validation_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('./data', train=False, transform=transforms.Compose([
-                       transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
-                   ])),
+    dict,
     batch_size=batch_size, shuffle=False, **kwargs)
-	
-for (X_train, y_train) in train_loader:
-    print('X_train:', X_train.size(), 'type:', X_train.type())
-    print('y_train:', y_train.size(), 'type:', y_train.type())
-    break
-	
+
+#print train_loader	
+
+for (X_train) in train_loader:
+    print('Data Values:', X_train)
+    #print('y_train:', y_train.size(), 'type:', y_train.type())
+    
+'''
 pltsize=1
 plt.figure(figsize=(10*pltsize, pltsize))
 
@@ -67,11 +72,7 @@ optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 
 print(model)
 
-def unpickle(file):
-	import cPickle
-	with open(file, 'rb') as fo:
-		dict = cPickle.load(fo)
-	return dict
+
 	
 def train(epoch, log_interval=100):
 	model.train()
@@ -111,12 +112,6 @@ def validate(loss_vector, accuracy_vector):
 		val_loss, correct, len(validation_loader.dataset), accuracy))
 		
 
-
-dict = unpickle("./data/test_batch")
-
-#print dict.keys()
-
-
 epochs = 10
 
 lossv, accv = [], []
@@ -143,7 +138,6 @@ validation_loader = torch.utils.data.DataLoader(
                    ])),
     batch_size=batch_size, shuffle=False, **kwargs)	
 
-'''
 pltplt..figurefigure((figsizefigsize=(5,3))
 plt.plot(np.arange(1,epochs+1), lossv)
 plt.title('validation loss')
