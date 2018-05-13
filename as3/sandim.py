@@ -69,7 +69,7 @@ class Net(nn.Module):
 		#x = x.view(-1, 32*32*3) #-1 means don't know how many rows to reshape to
 		x = F.relu(self.fc1(x))
 		x = self.fc1_drop(x)
-		return F.log_softmax(self.fc2(x))
+		return F.log_softmax(self.fc2(x),dim=0)
 
 model = Net()
 if cuda:
@@ -103,7 +103,7 @@ def validate(loss_vector, accuracy_vector):
 	for data, target in validation_loader:
 		if cuda:
 			data, target = data.cuda(), target.cuda()
-		data, target = Variable(data, volatile=True), Variable(target)
+		data, target = Variable(data, requires_grad=True), Variable(target)
 		data = Variable(data.view(-1, 32*32*3))
 		output = model(data)
 		target = target.type(torch.LongTensor)
@@ -127,7 +127,7 @@ def validate(loss_vector, accuracy_vector):
 
 
 #TRAINING
-epochs = 100
+epochs = 10
 
 lossv, accv = [], []
 for epoch in range(1, epochs + 1):
