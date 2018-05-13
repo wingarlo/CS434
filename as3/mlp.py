@@ -7,36 +7,42 @@ from torch.autograd import Variable
 
 import numpy as np
 
-cuda = torch.cuda.is_available()
 
 def unpickle(file):
 	import cPickle
 	with open(file, 'rb') as fo:
 		dict = cPickle.load(fo)
 	return dict
+	
+classes = unpickle("data/batches.meta")["label_names"]
+batch1 = unpickle("data/data_batch_1")
+batch2 = unpickle("data/data_batch_2")
+batch3 = unpickle("data/data_batch_3")
+batch4 = unpickle("data/data_batch_4")
+testbatch = unpickle("data/test_batch")
 
-dict = torch.Tensor(unpickle("./data/data_batch_1")["data"])
-dict = torch.utils.data.TensorDataset(dict)
-#print type(dict)
-batch_size = 32
-
-kwargs = {'num_workers': 1, 'pin_memory': True} if cuda else {}
-
-train_loader = torch.utils.data.DataLoader(
-    dict,
-    batch_size=batch_size, shuffle=True, **kwargs)
+trainingFeatures = np.concatenate((batch1["data"], batch2["data"], batch3["data"], batch4["data"]), axis=0)/255.0
+trainingFeatures = torch.tensor(trainingFeatures, dtype=torch.float)
+trainingTargets = torch.tensor(np.concatenate((batch1["labels"], batch2["labels"], batch3["labels"], batch4["labels"])), dtype=torch.float)
+testingFeatures = testbatch["data"]
+testingFeatures = torch.tensor(testingFeatures/255.0, dtype=torch.float)
+testingTargets = torch.tensor(testbatch["labels"], dtype=torch.float)
 
 
-validation_loader = torch.utils.data.DataLoader(
-    dict,
-    batch_size=batch_size, shuffle=False, **kwargs)
+#LOAD DATA
+batch_size = 10000*4 #10000 examples per batch file
 
-#print train_loader	
+train = torch.utils.data.TensorDataset(trainingFeatures, trainingTargets)
+train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True)
 
-for (X_train) in train_loader:
-    print('Data Values:', X_train)
-    #print('y_train:', y_train.size(), 'type:', y_train.type())
-    
+
+test = torch.utils.data.TensorDataset(testingFeatures, testingTargets)
+validation_loader = torch.utils.data.DataLoader(test, batch_size=10000, shuffle=True)
+
+for (X_train, y_train) in train_loader:
+    print('X_train:', X_train.size(), 'type:', X_train.type())
+    print('y_train:', y_train.size(), 'type:', y_train.type())
+    break
 '''
 pltsize=1
 plt.figure(figsize=(10*pltsize, pltsize))
