@@ -22,7 +22,7 @@ weight_dec = 0
 drop_out = 0.2
 moment = 0.5
 
-elif len(sys.argv) == 5:
+if len(sys.argv) == 5:
 	learnRate = float(sys.argv[1])
 	weight_dec = float(sys.argv[2])
 	drop_out = float(sys.argv[3])
