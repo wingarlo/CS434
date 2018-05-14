@@ -123,6 +123,16 @@ def validate(loss_vector, accuracy_vector):
 		val_loss, correct, len(validation_loader.dataset), accuracy))
 	return (float(val_loss), accuracy)
 
+def safeString(num,tag):
+	if num < 1.0:
+		temp = str(num)
+		temp = tag+temp[2:]
+	else:
+		temp = str(num)
+		temp = '.'.join(temp.split())
+		temp = tag+temp
+	return temp
+
 
 #TRAINING
 epochs = 10
@@ -132,7 +142,12 @@ for epoch in range(1, epochs + 1):
 	
 	train(epoch)
 	results.append(validate(lossv, accv))
-filename = 'MLPresult'+str(int(10000*learnRate))+'.csv'
+tag = ""
+tag += safeString(learnRate,"lr")
+tag += safeString(drop_out,"do")
+tag += safeString(moment,"mo")
+tag += safeString(weight_dec,"wd")
+filename = tag+'.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
 	output.writerow(['Epoch']+['Accuracy']+['Average Loss'])
