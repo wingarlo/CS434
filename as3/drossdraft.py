@@ -130,6 +130,6 @@ for epoch in range(1, epochs + 1):
 filename = 'MLPresult'+str(int(10000*learnRate))+'.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
-	output.writerow(['Epoch']+['Average Loss']+['Accuracy'])
+	output.writerow(['Epoch']+['Accuracy']+['Average Loss'])
 	for q in range(len(results)):
-		output.writerow([q]+[results[q][0]]+[results[q][1]])
+		output.writerow([q]+[results[q][1]]+[results[q][0]])
