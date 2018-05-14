@@ -17,7 +17,8 @@ def unpickle(file):
 	with open(file, 'rb') as fo:
 		dict = cPickle.load(fo)
 	return dict
-learnRate = 0.01
+
+learnRate = 0.1
 if len(sys.argv) == 2:
 	learnRate = float(sys.argv[1])
 
@@ -37,30 +38,23 @@ testingFeatures = torch.tensor(testingFeatures/255.0, dtype=torch.float)
 testingTargets = torch.tensor(testbatch["labels"], dtype=torch.float)
 
 
-
 cuda = torch.cuda.is_available()
 print('Using PyTorch version:', torch.__version__, 'CUDA:', cuda)
 
 #LOAD DATA
-batch_size = 10000*4 #10000 examples per batch file
+batchSize = 10000 #10000 examples per batch file
 
 train = torch.utils.data.TensorDataset(trainingFeatures, trainingTargets)
-train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True)
-
+train_loader = torch.utils.data.DataLoader(train, batch_size=batchSize, shuffle=True)
 
 test = torch.utils.data.TensorDataset(testingFeatures, testingTargets)
-validation_loader = torch.utils.data.DataLoader(test, batch_size=10000, shuffle=True)
-
+validation_loader = torch.utils.data.DataLoader(test, batch_size=batchSize, shuffle=True)
 
 
 for (X_train, y_train) in train_loader:
 	print('X_train:', X_train.size(), 'type:', X_train.type())
 	print('y_train:', y_train.size(), 'type:', y_train.type())
 	break
-
-
-
-
 
 
 #NETWORK DEFINITION
@@ -78,14 +72,11 @@ class Net(nn.Module):
 		return F.log_softmax(self.fc2(x))
 
 model = Net()
-if cuda:
-	model.cuda()
 
-print learnRate
+print('Learning Rate: {}'.format(learnRate))
 optimizer = optim.SGD(model.parameters(), learnRate, momentum=0.5)
 
-print(model)
-
+#print(model)
 
 def train(epoch, log_interval=100):
 	model.train()
@@ -99,10 +90,9 @@ def train(epoch, log_interval=100):
 		loss = F.nll_loss(output, target)
 		loss.backward()
 		optimizer.step()
-		if batch_idx % log_interval == 0:
-			print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-				epoch, batch_idx * len(data), len(train_loader.dataset),
-				100. * batch_idx / len(train_loader), loss.data[0]))
+		print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+			epoch, batch_idx * len(data), len(train_loader.dataset),
+			100. * batch_idx / len(train_loader), loss.data[0]))
 
 def validate(loss_vector, accuracy_vector):
 	model.eval()
@@ -129,12 +119,6 @@ def validate(loss_vector, accuracy_vector):
 	return (float(val_loss), accuracy)
 
 
-
-
-
-
-
-
 #TRAINING
 epochs = 10
 results = []
@@ -143,8 +127,8 @@ for epoch in range(1, epochs + 1):
 	
 	train(epoch)
 	results.append(validate(lossv, accv))
-	
-with open('MLPresult.csv','wb') as mlpout:
+filename = 'MLPresult'+str(int(10000*learnRate))+'.csv'
+with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
 	output.writerow(['Epoch']+['Average Loss']+['Accuracy'])
 	for q in range(len(results)):
