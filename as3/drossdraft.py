@@ -17,11 +17,16 @@ def unpickle(file):
 	with open(file, 'rb') as fo:
 		dict = cPickle.load(fo)
 	return dict
+learnRate = 0.1	
+weight_dec = 0
+drop_out = 0.2
+moment = 0.5
 
-learnRate = 0.1
-if len(sys.argv) == 2:
+elif len(sys.argv) == 5:
 	learnRate = float(sys.argv[1])
-
+	weight_dec = float(sys.argv[2])
+	drop_out = float(sys.argv[3])
+	moment = float(sys.argv[4])
 
 classes = unpickle("data/batches.meta")["label_names"]
 batch1 = unpickle("data/data_batch_1")
@@ -62,7 +67,7 @@ class Net(nn.Module):
 	def __init__(self):
 		super(Net, self).__init__()
 		self.fc1 = nn.Linear(32*32*3, 100)
-		self.fc1_drop = nn.Dropout(0.2)
+		self.fc1_drop = nn.Dropout(drop_out)
 		self.fc2 = nn.Linear(100, 10)
 
 	def forward(self, x):
@@ -74,7 +79,7 @@ class Net(nn.Module):
 model = Net()
 
 print('Learning Rate: {}'.format(learnRate))
-optimizer = optim.SGD(model.parameters(), learnRate, momentum=0.5)
+optimizer = optim.SGD(model.parameters(), lr=learnRate, momentum=moment, weight_decay = weight_dec)
 
 #print(model)
 
