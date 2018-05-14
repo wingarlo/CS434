@@ -36,10 +36,10 @@ cuda = torch.cuda.is_available()
 print('Using PyTorch version:', torch.__version__, 'CUDA:', cuda)
 
 #LOAD DATA
-batch_size = 10000*4 #10000 examples per batch file
+batchSize = 10000 #10000 examples per batch file
 
 train = torch.utils.data.TensorDataset(trainingFeatures, trainingTargets)
-train_loader = torch.utils.data.DataLoader(train, batch_size=batch_size, shuffle=True)
+train_loader = torch.utils.data.DataLoader(train, batch_size=batchSize, shuffle=True)
 
 
 test = torch.utils.data.TensorDataset(testingFeatures, testingTargets)
