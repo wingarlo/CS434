@@ -76,6 +76,22 @@ class Net(nn.Module):
 		x = F.relu(self.fc1(x))
 		x = self.fc1_drop(x)
 		return F.log_softmax(self.fc2(x))
+class Net2(nn.Module):
+	def __init__(self):
+		super(Net, self).__init__()
+		self.fc1 = nn.Linear(32*32*3, 50)
+		self.fc1_drop = nn.Dropout(drop_out)
+		self.fc2 = nn.Linear(50, 50)
+		self.fc2_drop = nn.Dropout(drop_out)
+		self.fc3 = nn.Linear(50, 10)
+
+	def forward(self, x):
+		#x = x.view(-1, 32*32*3) #-1 means don't know how many rows to reshape to
+		x = F.relu(self.fc1(x))
+		x = self.fc1_drop(x)
+		x = F.relu(self.fc2(x))
+		x = self.fc2_drop(x)
+		return F.log_softmax(self.fc3(x))
 
 model = Net()
 
@@ -139,7 +155,24 @@ def buildNet(lr,wd,do,mo):
 		train(epoch)
 		results.append(validate(lossv, accv))
 	return results
-	
+
+def buildNet2(lr,wd,do,mo):
+	learnRate = lr
+	weight_decay = wd
+	dropout = do
+	momentum = mo
+	model = Net2()
+	optimizer = optim.SGD(model.parameters(), lr=learnRate, momentum=moment, weight_decay = weight_dec)
+
+	#TRAINING
+	epochs = 10
+	results = []
+	lossv, accv = [], []
+	for epoch in range(1, epochs + 1):
+		train(epoch)
+		results.append(validate(lossv, accv))
+	return results
+
 learnRate = 0.1	
 weight_dec = 0
 drop_out = 0.2
@@ -184,3 +217,13 @@ with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
 	for q in range(len(MOResults)):
 		output.writerow([MOResults[q][0]]+[MOResults[q][1]]+[MOResults[q][2]]+[MOResults[q][3]]+[MOResults[q][4]]+[MOResults[q][5]]+[MOResults[q][6]]+[MOResults[q][7]]+[MOResults[q][8]]+[MOResults[q][9]]+[MOResults[q][10]])
+
+P4Results = []
+for a in learn_ratearray:
+	P4Results.append([a]+buildNet2(a,weight_dec,drop_out,moment))
+filename = 'MLP_P4.csv'
+with open(filename,'wb') as mlpout:
+	output = csv.writer(mlpout, delimiter=',')
+	for q in range(len(P4Results)):
+		output.writerow([P4Results[q][0]]+[P4Results[q][1]]+[P4Results[q][2]]+[P4Results[q][3]]+[P4Results[q][4]]+[P4Results[q][5]]+[P4Results[q][6]]+[P4Results[q][7]]+[P4Results[q][8]]+[P4Results[q][9]]+[P4Results[q][10]])
+
