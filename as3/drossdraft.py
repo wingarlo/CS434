@@ -166,7 +166,7 @@ filename = 'MLP_WD.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
 	for q in range(len(WDResults)):
-		output.writerow([WDResults[q][0]]+[WDResults[q][1]]+[WDResults[q][2]]+[WDResults[q][3]]+[WDResults[q][4]]+[WDResults[q][5]]+[WDResults[q][6]]+[WDResults[q][7]]+[WDResults[q][8]]+[WDResults[q][9]])
+		output.writerow([WDResults[q][0]]+[WDResults[q][1]]+[WDResults[q][2]]+[WDResults[q][3]]+[WDResults[q][4]]+[WDResults[q][5]]+[WDResults[q][6]]+[WDResults[q][7]]+[WDResults[q][8]]+[WDResults[q][9]]+[WDResults[q][10]])
 
 DOResults = []
 for c in drop_outarray:
@@ -175,7 +175,7 @@ filename = 'MLP_DO.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
 	for q in range(len(DOResults)):
-		output.writerow([DOResults[q][0]]+[DOResults[q][1]]+[DOResults[q][2]]+[DOResults[q][3]]+[DOResults[q][4]]+[DOResults[q][5]]+[DOResults[q][6]]+[DOResults[q][7]]+[DOResults[q][8]]+[DOResults[q][9]])
+		output.writerow([DOResults[q][0]]+[DOResults[q][1]]+[DOResults[q][2]]+[DOResults[q][3]]+[DOResults[q][4]]+[DOResults[q][5]]+[DOResults[q][6]]+[DOResults[q][7]]+[DOResults[q][8]]+[DOResults[q][9]]+[DOResults[q][10]])
 
 MOResults = []
 for d in drop_outarray:
@@ -184,4 +184,4 @@ filename = 'MLP_MO.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
 	for q in range(len(MOResults)):
-		output.writerow([MOResults[q][0]]+[MOResults[q][1]]+[MOResults[q][2]]+[MOResults[q][3]]+[MOResults[q][4]]+[MOResults[q][5]]+[MOResults[q][6]]+[MOResults[q][7]]+[MOResults[q][8]]+[MOResults[q][9]])
+		output.writerow([MOResults[q][0]]+[MOResults[q][1]]+[MOResults[q][2]]+[MOResults[q][3]]+[MOResults[q][4]]+[MOResults[q][5]]+[MOResults[q][6]]+[MOResults[q][7]]+[MOResults[q][8]]+[MOResults[q][9]]+[MOResults[q][10]])
