@@ -145,17 +145,23 @@ weight_dec = 0
 drop_out = 0.2
 moment = 0.5
 learn_ratearray = [0.1,0.01,0.001,0.0001]
-weight_decayarray = [0., 0.001, 0.01, 0.1, 0.3, 0.7]
-drop_outarray = [0.9, 0.5, 0.2, 0.1, 0.01]
-momentumarray = [0., 0.25,0.5,0.75,0.9]
+weight_decayarray = [0., 0.001, 0.01, 0.1, 0.3, 0.7, 0.9, 2.0]
+drop_outarray = [0.9, 0.5, 0.2, 0.1, 0.01, 0.0001, 0.000001]
+momentumarray = [0., 0.25,0.5,0.75,0.9,0.0001,1.0,2.0,3.0]
 '''
 LRResults = []
 for a in learn_ratearray:
-	LRResults.append(buildNet(a,weight_dec,drop_out,moment))
+	LRResults.append([a]+buildNet(a,weight_dec,drop_out,moment))
+filename = 'MLP_LR.csv'
+with open(filename,'wb') as mlpout:
+	output = csv.writer(mlpout, delimiter=',')
+	for q in range(len(LRResults)):
+		output.writerow([LRResults[q][0]]+[LRResults[q][1]]+[LRResults[q][2]]+[LRResults[q][3]]+[LRResults[q][4]]+[LRResults[q][5]]+[LRResults[q][6]]+[LRResults[q][7]]+[LRResults[q][8]]+[LRResults[q][9]])
+
 '''
 WDResults = []
 for b in weight_decayarray:
-	WDResults.append(buildNet(learnRate,b,drop_out,moment))
+	WDResults.append([b]+buildNet(learnRate,b,drop_out,moment))
 filename = 'MLP_WD.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
@@ -164,7 +170,7 @@ with open(filename,'wb') as mlpout:
 
 DOResults = []
 for c in drop_outarray:
-	DOResults.append(buildNet(learnRate,weight_dec,c,moment))
+	DOResults.append([c]+buildNet(learnRate,weight_dec,c,moment))
 filename = 'MLP_DO.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
@@ -173,7 +179,7 @@ with open(filename,'wb') as mlpout:
 
 MOResults = []
 for d in drop_outarray:
-	MOResults.append(buildNet(learnRate,weight_dec,drop_out,d))
+	MOResults.append([d]+buildNet(learnRate,weight_dec,drop_out,d))
 filename = 'MLP_MO.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
