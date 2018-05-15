@@ -17,6 +17,7 @@ def unpickle(file):
 	with open(file, 'rb') as fo:
 		dict = cPickle.load(fo)
 	return dict
+
 learnRate = 0.1	
 weight_dec = 0
 drop_out = 0.2
@@ -78,7 +79,6 @@ class Net(nn.Module):
 
 model = Net()
 
-print('Learning Rate: {}'.format(learnRate))
 optimizer = optim.SGD(model.parameters(), lr=learnRate, momentum=moment, weight_decay = weight_dec)
 
 #print(model)
@@ -121,35 +121,61 @@ def validate(loss_vector, accuracy_vector):
 	
 	print('\nValidation set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
 		val_loss, correct, len(validation_loader.dataset), accuracy))
-	return (float(val_loss), accuracy)
-
-def safeString(num,tag):
-	if num < 1.0:
-		temp = str(num)
-		temp = tag+temp[2:]
-	else:
-		temp = str(num)
-		temp = '.'.join(temp.split())
-		temp = tag+temp
-	return temp
-
-
-#TRAINING
-epochs = 10
-results = []
-lossv, accv = [], []
-for epoch in range(1, epochs + 1):
+	return accuracy
 	
-	train(epoch)
-	results.append(validate(lossv, accv))
-tag = ""
-tag += safeString(learnRate,"lr")
-tag += safeString(drop_out,"do")
-tag += safeString(moment,"mo")
-tag += safeString(weight_dec,"wd")
-filename = tag+'.csv'
+def buildNet(lr,wd,do,mo):
+	learnRate = lr
+	weight_decay = wd
+	dropout = do
+	momentum = mo
+	model = Net()
+	optimizer = optim.SGD(model.parameters(), lr=learnRate, momentum=moment, weight_decay = weight_dec)
+
+	#TRAINING
+	epochs = 10
+	results = []
+	lossv, accv = [], []
+	for epoch in range(1, epochs + 1):
+		train(epoch)
+		results.append(validate(lossv, accv))
+	return results
+	
+learnRate = 0.1	
+weight_dec = 0
+drop_out = 0.2
+moment = 0.5
+learn_ratearray = [0.1,0.01,0.001,0.0001]
+weight_decayarray = [0., 0.001, 0.01, 0.1, 0.3, 0.7]
+drop_outarray = [0.9, 0.5, 0.2, 0.1, 0.01]
+momentumarray = [0., 0.25,0.5,0.75,0.9]
+'''
+LRResults = []
+for a in learn_ratearray:
+	LRResults.append(buildNet(a,weight_dec,drop_out,moment))
+'''
+WDResults = []
+for b in weight_decayarray:
+	WDResults.append(buildNet(learnRate,b,drop_out,moment))
+filename = 'MLP_WD.csv'
 with open(filename,'wb') as mlpout:
 	output = csv.writer(mlpout, delimiter=',')
-	output.writerow(['Epoch']+['Accuracy']+['Average Loss'])
-	for q in range(len(results)):
-		output.writerow([q]+[results[q][1]]+[results[q][0]])
+	for q in range(len(WDResults)):
+		output.writerow([WDResults[q][0]]+[WDResults[q][1]]+[WDResults[q][2]]+[WDResults[q][3]]+[WDResults[q][4]]+[WDResults[q][5]]+[WDResults[q][6]]+[WDResults[q][7]]+[WDResults[q][8]]+[WDResults[q][9]])
+
+DOResults = []
+for c in drop_outarray:
+	DOResults.append(buildNet(learnRate,weight_dec,c,moment))
+filename = 'MLP_DO.csv'
+with open(filename,'wb') as mlpout:
+	output = csv.writer(mlpout, delimiter=',')
+	for q in range(len(DOResults)):
+		output.writerow([DOResults[q][0]]+[DOResults[q][1]]+[DOResults[q][2]]+[DOResults[q][3]]+[DOResults[q][4]]+[DOResults[q][5]]+[DOResults[q][6]]+[DOResults[q][7]]+[DOResults[q][8]]+[DOResults[q][9]])
+
+MOResults = []
+for d in drop_outarray:
+	MOResults.append(buildNet(learnRate,weight_dec,drop_out,d))
+filename = 'MLP_MO.csv'
+with open(filename,'wb') as mlpout:
+	output = csv.writer(mlpout, delimiter=',')
+	for q in range(len(MOResults)):
+		output.writerow([MOResults[q][0]]+[MOResults[q][1]]+[MOResults[q][2]]+[MOResults[q][3]]+[MOResults[q][4]]+[MOResults[q][5]]+[MOResults[q][6]]+[MOResults[q][7]]+[MOResults[q][8]]+[MOResults[q][9]])
