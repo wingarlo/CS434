@@ -3,10 +3,13 @@ import numpy as np
 import os
 import math
 from random import randint
-
+itrs = 10
 k = 2
 if len(sys.argv) == 2:
-	k = int(sys.argv[1])
+	itrs = int(sys.argv[1])
+if len(sys.argv) == 3:
+	itrs = int(sys.argv[1])
+	k = int(sys.argv[2])
 
 	
 def dist(p1, p2):#takes in 2 arrays of any length and returns distance
@@ -41,14 +44,13 @@ for count in range(0,10):
 				
 				temp = i			#finds which mu data[x] is closest to, and puts it in c[i]
 		c[temp].append(data[x])
-	
 	for j in range(len(c)):			#Update step
 		mu[j] = []
-		for x in range(0,len(data[0])):
+		for x in range(0,len(c[j][0])):
 			sum = 0
-			for y in range(0,len(data)):
-				sum += data[y,x]
-			mu[j].append((sum/len(data)))
+			for y in range(0,len(c[j])):
+				sum += c[j][y][x]
+			mu[j].append((sum/len(c[j])))
 	
 	print len(c[0])
 	print len(c[1])
