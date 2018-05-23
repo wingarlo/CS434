@@ -52,9 +52,13 @@ for count in range(0,10):
 				sum += c[j][y][x]
 			mu[j].append((sum/len(c[j])))
 	
-	print len(c[0])
-	print len(c[1])
+	sse = 0.0
 	for j in range(0,len(c)):
+		for p in range(0, len(c[j][0])):
+			for count in range(0,len(c[j])):
+				sse += (float(c[j][count][p])-float(mu[j][p]))**2
+		print "Points in cluster", j,":", len(c[j])
 		c[j] = []
+	sse = ((sse/k)/(255.*784.))
 	
-		
+	print "Sum of Squared error", sse
