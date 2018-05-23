@@ -40,8 +40,18 @@ def covariance(x,c):
     result = result/n
     return result
 
-
-
+def findEigenvectors(covarimatrix):
+	values, vectors = numpy.linalg.eig(covarimatrix)
+	index = 0
+	ranking = 0
+	sortValues = []
+	for i in values:
+		sortValues.append((i,index))
+		index += 1
+	sortValues = sorted(sortValues, key=lambda eigen: eigen[0], reverse=true)
+	topTen = sortValues[:10]
+	tenVectors = np.array([vectors[topTen[0][1]],vectors[topTen[1][1]],vectors[topTen[2][1]],vectors[topTen[3][1]],vectors[topTen[4][1]],vectors[topTen[5][1]],vectors[topTen[6][1]],vectors[topTen[7][1]],vectors[topTen[8][1]],vectors[topTen[9][1]]])
+    return topTen, tenVectors
     
 data = readData("./data/data-1.txt")
 center = center(data)
