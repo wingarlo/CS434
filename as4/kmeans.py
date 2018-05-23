@@ -35,7 +35,7 @@ for i in range(k):#initialization
 	mu.append(data[randint(0,len(data))])
 	c.append([])
 temp = 0
-for count in range(0,10):
+for count in range(0,itrs):
 	for x in range(len(data)):
 		minDist = 99999
 		for i in range(k):#assignment step
@@ -59,6 +59,5 @@ for count in range(0,10):
 				sse += (float(c[j][count][p])-float(mu[j][p]))**2
 		print "Points in cluster", j,":", len(c[j])
 		c[j] = []
-	sse = ((sse/k)/(255.*784.))
 	
 	print "Sum of Squared error", sse
