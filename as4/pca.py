@@ -3,6 +3,9 @@ import numpy as np
 import os
 import math
 from random import randint
+
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 def dist(p1, p2):#takes in 2 arrays of any length and returns distance
@@ -42,10 +45,11 @@ def covariance(x,c):
     
 data = readData("./data/data-1.txt")
 center = center(data)
-covariance = covariance(data,center)
+#covariance = covariance(data,center)
 print(center)
 print(len(center))
 
-print(covariance)
+#print(covariance)
 
-#plt.imshow(reshape(center,28,28))
+plt.imshow(np.reshape(center,(28,28)))
+plt.show()
