@@ -4,10 +4,10 @@ from numpy import linalg as LA
 import os
 import math
 from random import randint
-import matplotlib.rcsetup as rcsetup
+
 import matplotlib as mpl
 mpl.use('GTKAgg')
-import matplotlib.pyplot as plt
+#from matplotlib import pyplot as plt
 
 dim = 784
 
@@ -36,7 +36,7 @@ def findEigen(covarimatrix):
 		index += 1
 	sortValues = sorted(sortValues, key=lambda eigen: eigen[0], reverse=True)
 	topTen = sortValues[:10]
-	topTenA = np.array(topTen)
+	topTenA = np.array([values[topTen[0][1]],values[topTen[1][1]],values[topTen[2][1]],values[topTen[3][1]],values[topTen[4][1]],values[topTen[5][1]],values[topTen[6][1]],values[topTen[7][1]],values[topTen[8][1]],values[topTen[9][1]]])
 	tenVectors = np.array([vectors[topTen[0][1]],vectors[topTen[1][1]],vectors[topTen[2][1]],vectors[topTen[3][1]],vectors[topTen[4][1]],vectors[topTen[5][1]],vectors[topTen[6][1]],vectors[topTen[7][1]],vectors[topTen[8][1]],vectors[topTen[9][1]]])
 	return topTenA,tenVectors
 
@@ -44,11 +44,8 @@ def findEigen(covarimatrix):
     
 data = readData("./data/data-1.txt")
 dataT = data.T
-center = np.mean(dataT, axis=0)
+center = np.mean(data, axis=0)
 covar = np.cov(dataT)
-print mpl.matplotlib_fname()
-
-print(rcsetup.all_backends)
 print "center"
 print(center)
 print "covariance array"
@@ -59,6 +56,12 @@ print(covar.shape)
 eigVals,eigVec = findEigen(covar)
 eigVals = eigVals.real
 eigVec = eigVec.real
+
+id = 0
+for v in eigVec:
+	v = np.multiply(v, eigVals[id])
+	id += 1
+
 print "Top Ten Eigenvalues"
 print eigVals
 print "Top Ten Eigenvectors"
@@ -71,6 +74,6 @@ vectorcount = 0
 for q in range(len(eigVec)):
 	filename = 'eigen/eigenVector'+str(vectorcount)+'.csv'
 	np.savetxt(filename, eigVec[vectorcount], delimiter=",")
-	plt.imshow(np.reshape(eigVec[vectorcount],(28,28)))
+	#plt.imshow(np.reshape(eigVec[vectorcount],(28,28)))
 	vectorcount += 1
-plt.show()
+#plt.show()
