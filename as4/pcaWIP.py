@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+from scipy import linalg as LA
 import os
 import math
 from random import randint
@@ -24,35 +25,43 @@ def readData(filename):
     x = np.array(x)
     return x.astype(np.int)#convert from string to int
 
-def center(x): #computes center of data
-    result = np.mean(x)
-    return result
-
-def covariance(x,c):
-    result2 = np.cov(x)
-    return result2
-
 def findEigen(covarimatrix):
-	values, vectors = np.linalg.eig(covarimatrix)
+	values, vectors = LA.eig(covarimatrix)
 	index = 0
 	ranking = 0
 	sortValues = []
 	for i in values:
 		sortValues.append((i,index))
 		index += 1
-	sortValues = sorted(sortValues, key=lambda eigen: eigen[0], reverse=true)
+	sortValues = sorted(sortValues, key=lambda eigen: eigen[0], reverse=True)
 	topTen = sortValues[:10]
 	tenVectors = np.array([vectors[topTen[0][1]],vectors[topTen[1][1]],vectors[topTen[2][1]],vectors[topTen[3][1]],vectors[topTen[4][1]],vectors[topTen[5][1]],vectors[topTen[6][1]],vectors[topTen[7][1]],vectors[topTen[8][1]],vectors[topTen[9][1]]])
 	return topTen,tenVectors
+
+
     
 data = readData("./data/data-1.txt")
 testMatrix = np.array
-center = center(data)
-covar = covariance(data,center)
+center = np.mean(data)
+covar = np.cov(data)
+print "center"
 print(center)
+print "covariance array"
 print(covar)
 eigVals,eigVec = findEigen(covar)
+print "Top Ten Eigenvalues"
 print eigVals
+print "Top Ten Eigenvectors"
 print eigVec
+
+filename = 'eigenValues.csv'
+np.savetxt(filename, eigVals, delimiter=",")
+
+vectorcount = 0
+for q in range(len(eigVec)):
+	filename = 'eigenVector'+str(vectorcount)+'.csv'
+	np.savetxt(filename, eigVec[vectorcount], delimiter=",")
+	vectorcount += 1
+
 plt.imshow(np.reshape(covar,(28,28)))
 plt.show()
