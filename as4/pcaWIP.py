@@ -7,7 +7,7 @@ from random import randint
 
 import matplotlib as mpl
 mpl.use('GTKAgg')
-#from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 
 dim = 784
 
@@ -70,10 +70,15 @@ print eigVec
 filename = 'eigen/eigenValues.csv'
 np.savetxt(filename, eigVals, delimiter=",")
 
+fig=plt.figure(figsize=(8, 8))
+columns = 5
+rows = 2
+
 vectorcount = 0
 for q in range(len(eigVec)):
-	filename = 'eigen/eigenVector'+str(vectorcount)+'.csv'
-	np.savetxt(filename, eigVec[vectorcount], delimiter=",")
-	#plt.imshow(np.reshape(eigVec[vectorcount],(28,28)))
-	vectorcount += 1
-#plt.show()
+    filename = 'eigen/eigenVector'+str(vectorcount)+'csv'
+    np.savetxt(filename, eigVec[vectorcount], delimiter=",")
+    fig.add_subplot(rows, columns, q)
+    plt.imshow(np.reshape(eigVec[vectorcount],(28,28)))
+    vectorcount += 1
+plt.show()
