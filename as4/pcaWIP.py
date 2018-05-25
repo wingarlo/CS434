@@ -4,8 +4,9 @@ from numpy import linalg as LA
 import os
 import math
 from random import randint
+import matplotlib.rcsetup as rcsetup
 import matplotlib as mpl
-mpl.use('Agg')
+mpl.use('GTKAgg')
 import matplotlib.pyplot as plt
 
 dim = 784
@@ -45,6 +46,9 @@ data = readData("./data/data-1.txt")
 dataT = data.T
 center = np.mean(dataT, axis=0)
 covar = np.cov(dataT)
+print mpl.matplotlib_fname()
+
+print(rcsetup.all_backends)
 print "center"
 print(center)
 print "covariance array"
