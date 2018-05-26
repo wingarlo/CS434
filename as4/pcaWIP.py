@@ -7,7 +7,7 @@ from random import randint
 
 import matplotlib as mpl
 mpl.use('GTKAgg')
-#from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 
 dim = 784
 
@@ -53,6 +53,10 @@ print(covar)
 print "covariance array shape"
 print(covar.shape)
 
+#plotting mean image
+plt.imshow(np.reshape(center,(28,28)))
+#plt.show()
+
 eigVals,eigVec = findEigen(covar)
 eigVals = eigVals.real
 eigVec = eigVec.real
@@ -92,24 +96,27 @@ print dimPeakID
 filename = 'eigen/eigenValues.csv'
 np.savetxt(filename, eigVals, delimiter=",")
 
-#fig=plt.figure(figsize=(8, 8))
+fig=plt.figure(figsize=(8, 8))
 columns = 5
 rows = 2
 
+#plotting eigen vectors
 vectorcount = 0
 for q in range(len(eigVec)):
 	filename = 'eigen/eigenVector'+str(vectorcount)+'.csv'
 	np.savetxt(filename, eigVec[vectorcount], delimiter=",")
-	#fig.add_subplot(rows, columns, q)
-	#plt.imshow(np.reshape(eigVec[vectorcount],(28,28)))
+	fig.add_subplot(rows, columns, q)
+	plt.imshow(np.reshape(eigVec[vectorcount],(28,28)))
 	vectorcount += 1
+#plt.show()
 
+#plotting top projections
 count = 0
 for q in range(len(dimPeakID)):
 	filename = 'bestMatch/data'+str(count)+'.csv'
 	dataID = dimPeakID[count]
 	np.savetxt(filename, data[dataID], delimiter=",")
-	#fig.add_subplot(rows, columns, q)
-	#plt.imshow(np.reshape(data[dataID],(28,28)))
+	fig.add_subplot(rows, columns, q)
+	plt.imshow(np.reshape(data[dataID],(28,28)))
 	count += 1
-#plt.show()
+plt.show()
