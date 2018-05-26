@@ -7,7 +7,7 @@ from random import randint
 
 import matplotlib as mpl
 mpl.use('GTKAgg')
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
 dim = 784
 
@@ -67,18 +67,49 @@ print eigVals
 print "Top Ten Eigenvectors"
 print eigVec
 
+projections = eigVec.dot(data.T)
+projections = projections.T
+print projections.shape
+
+dimMax = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+dimPeakID = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+id = 0
+for p in projections:
+	eid = 0
+	for ex in p:
+		if ex > dimMax[eid]:
+			dimMax[eid] = ex
+			dimPeakID[eid] = id
+		eid += 1
+	id += 1
+
+print "dimMax"
+print dimMax
+print "dimPeakID"
+print dimPeakID
+
+
 filename = 'eigen/eigenValues.csv'
 np.savetxt(filename, eigVals, delimiter=",")
 
-fig=plt.figure(figsize=(8, 8))
+#fig=plt.figure(figsize=(8, 8))
 columns = 5
 rows = 2
 
 vectorcount = 0
 for q in range(len(eigVec)):
-    filename = 'eigen/eigenVector'+str(vectorcount)+'csv'
-    np.savetxt(filename, eigVec[vectorcount], delimiter=",")
-    fig.add_subplot(rows, columns, q)
-    plt.imshow(np.reshape(eigVec[vectorcount],(28,28)))
-    vectorcount += 1
-plt.show()
+	filename = 'eigen/eigenVector'+str(vectorcount)+'.csv'
+	np.savetxt(filename, eigVec[vectorcount], delimiter=",")
+	#fig.add_subplot(rows, columns, q)
+	#plt.imshow(np.reshape(eigVec[vectorcount],(28,28)))
+	vectorcount += 1
+
+count = 0
+for q in range(len(dimPeakID)):
+	filename = 'bestMatch/data'+str(count)+'.csv'
+	dataID = dimPeakID[count]
+	np.savetxt(filename, data[dataID], delimiter=",")
+	#fig.add_subplot(rows, columns, q)
+	#plt.imshow(np.reshape(data[dataID],(28,28)))
+	count += 1
+#plt.show()
