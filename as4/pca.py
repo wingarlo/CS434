@@ -24,10 +24,10 @@ def readData(filename):
     return x.astype(np.int)#convert from string to int
 
 def center(x): #computes center of data
-    result = np.zeros(784)
+    result = x[0]
     n = len(x)
-    for point in x:
-        result+=point
+    for i in range(1,n):
+        result+=x[i]
     result = result/n
     return result
 
