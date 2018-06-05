@@ -84,9 +84,9 @@ def timeParse(timestring):
 	seconds = seci + mini + houri
 	return seconds
 
-okeys,ofeatures,ocastData = loadCSV("data/Subject_1.csv","data/list_1.csv")
-Xres,Yres = compileHalfHour(okeys,ofeatures,ocastData)
-X = np.array(Xres)
-Y = np.array(Yres)
-print X.shape
-print Y.shape		
+# okeys,ofeatures,ocastData = loadCSV("data/Subject_1.csv","data/list_1.csv")
+# Xres,Yres = compileHalfHour(okeys,ofeatures,ocastData)
+# X = np.array(Xres)
+# Y = np.array(Yres)
+# print X.shape
+# print Y.shape		
