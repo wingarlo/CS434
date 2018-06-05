@@ -27,7 +27,8 @@ def loadCSV(dataFile,indicesFile):
 def compileHalfHour(keys,features,castData):
 	compiledData = []
 	valueCount = 0.0
-	halfHours = (len(keys)//7)+1
+	lasttime = int(castData[-1][0])
+	halfHours = (lasttime//7)+1
 	for x in range(halfHours):
 		compiledData.append([0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0])
 		valueCount = 0
@@ -57,12 +58,17 @@ def compileHalfHour(keys,features,castData):
 		compiledData[x].insert(-1,valueCount)
 		if compiledData[x][-1] > 0:
 			compiledData[x][-1] = 1
-	return compiledData
+	Y = []
+	X = []
+	for entry in compiledData:
+		Y.append(entry[-1])
+		X.append(entry[0:-1])
+	return X,Y
 	
 okeys,ofeatures,ocastData = loadCSV("data/Subject_1.csv","data/list_1.csv")
-results = np.array(compileHalfHour(okeys,ofeatures,ocastData))
-print results.shape
-print results
-
-				
-				
+Xres,Yres = compileHalfHour(okeys,ofeatures,ocastData)
+X = np.array(Xres)
+Y = np.array(Yres)
+print X.shape
+print Y.shape
+print X
