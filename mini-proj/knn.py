@@ -3,26 +3,6 @@ import copy
 import math
 import loadingdata
 
-# def readData(inputFile,indices,featuresMatrix,labelsMatrix):
-#     #read in training data
-#     file1 = open(inputFile,"r")
-#     file2 = open(indices,"r")
-#     for line,index in zip(file1,file2):
-#         #put values into matrices
-#         row = line.split(',') #array of elements in current row
-#         labelsMatrix.append(row.pop()) #append class
-#         row[0]=index
-#         featuresMatrix.append(row) #add the rest of elements in feature matrix
-#     file1.close()
-#     file2.close()
-
-# A = []
-# Alabels = []
-
-# readData("data/Subject_1.csv","data/list_1.csv",A,Alabels)
-# A = np.asarray(A,dtype=float)
-# Alabels = np.asarray(Alabels,dtype=float)
-
 def classify(X, Y, p, k): #classifies one point. p=test point
     distance=[]
     for i in range(0,len(X)):
@@ -42,7 +22,7 @@ def classify(X, Y, p, k): #classifies one point. p=test point
 
 def knn(X1,Y1,X2,Y2):
     n1=len(Y1)
-    #n2=len(Y2)
+    n2=len(Y2)
 
     TP=0.
     FN=0.
@@ -50,12 +30,12 @@ def knn(X1,Y1,X2,Y2):
     TN=0.
 
     k=2
-    #TRAINING ERROR
-    TrainErr=0
-    for i in range(0,n1):
-        group=classify(X1,Y1,X1[i],k)
-        if(group!=Y1[i]):
-            TrainErr+=1
+    #TESTING
+    TestErr=0
+    for i in range(0,n2):
+        group=classify(X1,Y1,X2[i],k)
+        if(group!=Y2[i]):
+            TestErr+=1
             if(group==1):
                 FP+=1
             else:
@@ -65,16 +45,16 @@ def knn(X1,Y1,X2,Y2):
                 TP+=1
             else:
                 TN+=1
-    TrainErr=float(TrainErr)/n1 #percentage of wrong predictions
+    TestErr=float(TestErr)/n2 #percentage of wrong predictions
 
     print("TP: "+str(TP))
     print("FN: "+str(FN))
     print("FP: "+str(FP))
-    precision = TP/(TP+FP)
-    recall = TP/(TP+FN)
-    F = 2*recall*precision/(recall+precision)
+    # precision = TP/(TP+FP)
+    # recall = TP/(TP+FN)
+    # F = 2*recall*precision/(recall+precision)
 
-    return precision
+    return TestErr
 
 
 
@@ -84,5 +64,5 @@ Xres,Yres = loadingdata.compileHalfHour(okeys,ofeatures,ocastData)
 X = np.array(Xres)
 Y = np.array(Yres)
 
-result=knn(X,Y,None,None)
+result=knn(X,Y,X,Y) #training err
 print(result)
