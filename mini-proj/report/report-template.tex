@@ -3,9 +3,9 @@
 \usepackage{graphicx}
 %\usepackage[colorinlistoftodos]{todonotes}
 
-\title{CS434 Final Project Report (3-page limit)}
-\author{Your names}
-\date{}
+\title{CS434 Final Project Report}
+\author{Ciin Dim, Daniel Ross, Logan Wingard}
+\date{6/12/2018}
 \begin{document}
 \maketitle
 \section{Feature formulation and preprocessing}
@@ -17,6 +17,10 @@ Did you pre-process your data in any way? This can be for the purpose of reducin
 \section{Learning algorithms}
 \subsection{Algorithms explored}
 Provide a list of learning algorithms that you explored for this project. For each algorithm, briefly justify your rationale for choosing this algorithm.
+\subsubsection{Linear Regression}
+Since we are looking for a correlation between features such as time of day, blood sugar level, etc. and whether a subject has a hypoglycemic episode, linear regression will allow us to calculate a line that best fits the training data to predict the outcome based on the features.
+\subsubsection{K Nearest Neighbor}
+Similar to linear regression, the relationship of the features are telling of whether a subject will have a hypoglycemic episode. Therefore, we are using k nearest neighbor to find instances most similar to the test instances to predict the outcome.
 \subsection{Final models}
 What are the final models that produced your submitted test predictions?
 
