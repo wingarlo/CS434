@@ -26,6 +26,17 @@ def loadCSV(dataFile, indexFile):
 		keys.append(castData[x][-1])
 		features.append(castData[x][:-1])
 	return keys,features,np.array(indiceso)
+	
+def loadTestData(dataFile):
+	castData = []
+	with open(dataFile, 'rb') as csvfile:
+		lines = csv.reader(csvfile)
+		dataset = list(lines)
+	for i in range(len(dataset)):
+		castData.append([])
+		for j in range(len(dataset[0])):
+			castData[i].append(float(dataset[i][j]))
+	return castData
 
 def compileHalfHour(keys,features,indices):
 	compiledData = []
