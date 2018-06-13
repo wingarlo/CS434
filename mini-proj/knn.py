@@ -29,14 +29,8 @@ def classify(X, Y, p, k): #classifies one point. p=test point
 
     return group,prob
 
-def knn(X1,Y1,X2,Y2, predictionFile):
-    n1=len(Y1)
-    n2=len(Y2)
-
-    TP=0.
-    FN=0.
-    FP=0.
-    TN=0.
+def knn(X1,Y1,X2, predictionFile):
+    n2=len(X2)
 
     file = open(predictionFile,"w")
 
@@ -46,34 +40,8 @@ def knn(X1,Y1,X2,Y2, predictionFile):
     for i in range(0,n2):
         group,prob=classify(X1,Y1,X2[i],k)
         file.write(str(prob)+","+str(group)+"\n")
-        if(group!=Y2[i]):
-            TestErr+=1
-            if(group==1):
-                FP+=1
-            else:
-                FN+=1
-        else:
-            if(group==1):
-                TP+=1
-            else:
-                TN+=1
-    TestErr=float(TestErr)/n2 #percentage of wrong predictions
 
     file.close()
-
-    print("TP: "+str(TP))
-    print("FN: "+str(FN))
-    print("FP: "+str(FP))
-    print("TN: "+str(TN))
-    # precision = TP/(TP+FP)
-    # recall = TP/(TP+FN)
-    # F = 2*recall*precision/(recall+precision)
-    # print("precision: "+str(precision))
-    # print("recall: "+str(recall))
-    # print("F: "+str(F))
-
-    return TestErr
-
 
 
 
@@ -91,11 +59,10 @@ Sub2X1 = np.array(comx)
 Sub2Y1 = np.array(comy)
 
 #testing data
-Sub2X2,Sub2Y2 = loadingdata.compileTestdata("data/subject2_instances.csv")
+Sub2X2 = loadingdata.compileTestdata("data/subject2_instances.csv")
 
 print("Subject 2")
-result=knn(Sub2X1,Sub2Y1,Sub2X2,Sub2Y2,"predictions/individual1_pred1.csv") 
-print("Error: "+str(result)+"\n")
+result=knn(Sub2X1,Sub2Y1,Sub2X2,"predictions/individual1_pred1.csv") 
 
 
 ###SUBJECT 7 INDIVIDUAL###
@@ -106,11 +73,10 @@ Sub7X1 = np.array(comx)
 Sub7Y1 = np.array(comy)
 
 #testing data
-Sub7X2,Sub7Y2 = loadingdata.compileTestdata("data/subject7_instances.csv")
+Sub7X2 = loadingdata.compileTestdata("data/subject7_instances.csv")
 
 print("Subject 7")
-result=knn(Sub7X1,Sub7Y1,Sub7X2,Sub7Y2,"predictions/individual2_pred1.csv") 
-print("Error: "+str(result)+"\n")
+result=knn(Sub7X1,Sub7Y1,Sub7X2,"predictions/individual2_pred1.csv") 
 
 
 ###GENERAL###
@@ -140,8 +106,7 @@ GenX1 = np.concatenate((Sub1X1, Sub4X1, Sub6X1, Sub9X1), axis=0)
 GenY1 = np.concatenate((Sub1Y1, Sub4Y1, Sub6Y1, Sub9Y1))
 
 #Testing data
-GenX2,GenY2 = loadingdata.compileTestdata("data/general_test_instances.csv")
+GenX2 = loadingdata.compileTestdata("data/general_test_instances.csv")
 
 print("General")
-result=knn(GenX1,GenY1,GenX2,GenY2,"predictions/general_pred1.csv") 
-print("Error: "+str(result)+"\n")
+result=knn(GenX1,GenY1,GenX2,"predictions/general_pred1.csv") 
