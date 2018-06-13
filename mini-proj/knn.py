@@ -29,7 +29,7 @@ def knn(X1,Y1,X2,Y2):
     FP=0.
     TN=0.
 
-    k=2
+    k=3
     #TESTING
     TestErr=0
     for i in range(0,n2):
@@ -50,19 +50,31 @@ def knn(X1,Y1,X2,Y2):
     print("TP: "+str(TP))
     print("FN: "+str(FN))
     print("FP: "+str(FP))
-    # precision = TP/(TP+FP)
-    # recall = TP/(TP+FN)
-    # F = 2*recall*precision/(recall+precision)
+    precision = TP/(TP+FP)
+    recall = TP/(TP+FN)
+    F = 2*recall*precision/(recall+precision)
+    print("precision: "+str(precision))
+    print("recall: "+str(recall))
+    print("F: "+str(F))
 
     return TestErr
 
 
 
 
-okeys,ofeatures,ocastData = loadingdata.loadCSV("data/Subject_1.csv","data/list_1.csv")
-Xres,Yres = loadingdata.compileHalfHour(okeys,ofeatures,ocastData)
-X = np.array(Xres)
-Y = np.array(Yres)
+# okeys,ofeatures,ocastData = loadingdata.loadCSV("data/Subject_1.csv","data/list_1.csv")
+# Xres,Yres = loadingdata.compileHalfHour(okeys,ofeatures,ocastData)
+# X = np.array(Xres)
+# Y = np.array(Yres)
 
-result=knn(X,Y,X,Y) #training err
+oy,ox,ids = loadingdata.loadCSV("data/Subject_2_part1.csv","data/list2_part1.csv")
+comx,comy = loadingdata.compileHalfHour(oy,ox,ids)
+X1 = np.array(comx)
+Y1 = np.array(comy)
+
+X2,Y2 = loadingdata.compileTestdata("data/subject2_instances.csv")
+print(X2.shape)
+
+
+result=knn(X1,Y1,X2,Y2) #training err
 print(result)

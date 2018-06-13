@@ -173,7 +173,7 @@ def compileTestdata(dataFile):
 	X = []
 	for entry in compiledData:
 		Y.append(entry[-1])
-		X.append(entry[0:-1])
+		X.append(entry[0:9])
 	Xout = np.array(X)
 	Yout = np.array(Y)
 	return Xout,Yout
