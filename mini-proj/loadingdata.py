@@ -179,14 +179,14 @@ def compileTestdata(dataFile):
 	return Xout,Yout
 
 
-oy,ox,ids = loadCSV("data/Subject_1.csv","data/list_1.csv")
-conx,cony = concatHalfHour(oy,ox,ids)
-comx,comy = compileHalfHour(oy,ox,ids)
+# oy,ox,ids = loadCSV("data/Subject_1.csv","data/list_1.csv")
+# conx,cony = concatHalfHour(oy,ox,ids)
+# comx,comy = compileHalfHour(oy,ox,ids)
 
-print conx[1]
-print conx[1].size
-print conx.shape
+# print conx[1]
+# print conx[1].size
+# print conx.shape
 
-print comx[0]
-print comx[0].size
-print comx.shape
+# print comx[0]
+# print comx[0].size
+# print comx.shape
