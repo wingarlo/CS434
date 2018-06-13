@@ -20,28 +20,32 @@ if len(sys.argv) == 5:
 	weight_dec = float(sys.argv[2])
 	drop_out = float(sys.argv[3])
 	moment = float(sys.argv[4])
+	
+#LOAD DATA
+testFiles = ["./data/general_test_instances.csv","./data/subject2_instances.csv","./data/subject7_instances.csv"]
 
-trainingFeaturesArray, trainingTargetsArray = loadD.concatHalfHour(loadD.loadCSV("./data/Subject_1.csv","./data/list_1.csv"))
+x,y,id = loadD.loadCSV("./data/Subject_1.csv","./data/list_1.csv")
+trainingFeaturesArray, trainingTargetsArray = loadD.concatHalfHour(x,y,id)
 OriginalFeatureCount = len(trainingFeaturesArray[0])
 trainingFeatures = torch.tensor(trainingFeaturesArray, dtype=torch.float)
 trainingTargets = torch.tensor(trainingTargetsArray, dtype=torch.float)
-
-testingFeaturesArray, testingTargetsArray = loadD.loadCSV("./data/Subject_1.csv","./data/list_1.csv")
-testingFeatures = torch.tensor(testingFeaturesArray, dtype=torch.float)
-testingTargets = torch.tensor(testingTargetsArray, dtype=torch.float)
-
-cuda = torch.cuda.is_available()
-print('Using PyTorch version:', torch.__version__, 'CUDA:', cuda)
-
-#LOAD DATA
 batchSize = len(trainingFeaturesArray)
 train = torch.utils.data.TensorDataset(trainingFeatures, trainingTargets)
 train_loader = torch.utils.data.DataLoader(train, batch_size=batchSize, shuffle=True)
 
-batchSize = len(trainingFeaturesArray)
-test = torch.utils.data.TensorDataset(trainingFeatures, trainingTargets)
-validation_loader = torch.utils.data.DataLoader(test, batch_size=batchSize, shuffle=True)
+validationFeaturesArray, validationTargetsArray = loadD.concatHalfHour(x,y,id)
+validationFeatures = torch.tensor(validationFeaturesArray, dtype=torch.float)
+validationTargets = torch.tensor(validationTargetsArray, dtype=torch.float)
+batchSize = len(validationFeaturesArray)
+validation = torch.utils.data.TensorDataset(validationFeatures, validationTargets)
+validation_loader = torch.utils.data.DataLoader(validation, batch_size=batchSize, shuffle=True)
 
+testingFeaturesArray = np.array(loadD.loadTestData(testFiles[0]))
+testingFeatures = torch.tensor(testingFeaturesArray, dtype=torch.float)
+testbatchSize = len(testingFeaturesArray)
+print "testbatchSize " + repr(testbatchSize)
+print 'test_size:', testingFeatures.size(), 'test_type:', testingFeatures.type()
+print " "
 
 for (X_train, y_train) in train_loader:
 	print('X_train:', X_train.size(), 'type:', X_train.type())
@@ -57,7 +61,7 @@ class Net(nn.Module):
 		self.fc1_drop = nn.Dropout(drop_out)
 		self.fc2 = nn.Linear(50, 50)
 		self.fc2_drop = nn.Dropout(drop_out)
-		self.fc3 = nn.Linear(50, 10)
+		self.fc3 = nn.Linear(50, 9)
 
 	def forward(self, x):
 		#x = x.view(-1, 32*32*3) #-1 means don't know how many rows to reshape to
@@ -77,8 +81,6 @@ optimizer = optim.SGD(model.parameters(), lr=learnRate, momentum=moment, weight_
 def train(epoch, log_interval=100):
 	model.train()
 	for batch_idx, (data, target) in enumerate(train_loader):
-		if cuda:
-			data, target = data.cuda(), target.cuda()
 		data, target = Variable(data), Variable(target)
 		optimizer.zero_grad()
 		output = model(data)
@@ -86,16 +88,12 @@ def train(epoch, log_interval=100):
 		loss = F.nll_loss(output, target)
 		loss.backward()
 		optimizer.step()
-		print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-			epoch, batch_idx * len(data), len(train_loader.dataset),
-			100. * batch_idx / len(train_loader), loss.data[0]))
+		#print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(epoch, batch_idx * len(data), len(train_loader.dataset),100. * batch_idx / len(train_loader), loss.data[0]))
 
 def validate(loss_vector, accuracy_vector):
 	model.eval()
 	val_loss, correct = 0, 0
 	for data, target in validation_loader:
-		if cuda:
-			data, target = data.cuda(), target.cuda()
 		data, target = Variable(data, volatile=True), Variable(target)
 		data = Variable(data.view(-1, OriginalFeatureCount))
 		output = model(data)
@@ -110,9 +108,25 @@ def validate(loss_vector, accuracy_vector):
 	accuracy = 100.0 * float(correct) / float(len(validation_loader.dataset))
 	accuracy_vector.append(accuracy)
 	
-	print('\nValidation set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-		val_loss, correct, len(validation_loader.dataset), accuracy))
+	#print('\nValidation set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(val_loss, correct, len(validation_loader.dataset), accuracy))
 	return (float(val_loss), accuracy)
+
+def test(testtensor,localbatchsize):
+	model.eval()
+	val_loss, correct = 0, 0
+	data = Variable(testtensor, volatile=True)
+	data = Variable(data.view(-1, OriginalFeatureCount))
+	output = model(data)
+	print "output size: " + repr(output.size())
+
+	'''
+	filename = 'MLPresult.csv'
+	with open(filename,'wb') as mlpout:
+		outputF = csv.writer(mlpout, delimiter=',')
+		for q in range(len(results)):
+			output.writerow([q]+[results[q][1]]+[results[q][0]])
+	'''
+	return (0)
 
 def safeString(num,tag):
 	if num < 1.0:
@@ -124,33 +138,20 @@ def safeString(num,tag):
 		temp = tag+temp
 	return temp
 
-
 #TRAINING
 epochs = 10
 results = []
 lossv, accv = [], []
 for epoch in range(1, epochs + 1):
-	
 	train(epoch)
 	results.append(validate(lossv, accv))
-
-	filename = 'MLPresult'+str(int(10000*learnRate))+'.csv'
+	'''
+	filename = 'MLPresult.csv'
 	with open(filename,'wb') as mlpout:
 		output = csv.writer(mlpout, delimiter=',')
 		output.writerow(['Epoch']+['Accuracy']+['Average Loss'])
 		for q in range(len(results)):
 			output.writerow([q]+[results[q][1]]+[results[q][0]])
+	'''
 
-# tag = ""
-# tag += safeString(learnRate,"lr")
-# tag += safeString(drop_out,"do")
-# tag += safeString(moment,"mo")
-# tag += safeString(weight_dec,"wd")
-# filename = tag+'.csv'
-# with open(filename,'wb') as mlpout:
-# 	output = csv.writer(mlpout, delimiter=',')
-# 	output.writerow(['Epoch']+['Accuracy']+['Average Loss'])
-# 	for q in range(len(results)):
-# 		output.writerow([q]+[results[q][1]]+[results[q][0]])
-
-
+test(testingFeatures, testbatchSize)
