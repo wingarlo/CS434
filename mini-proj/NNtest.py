@@ -10,7 +10,7 @@ import torch.optim as optim
 from torch.autograd import Variable
 import loadingdata as loadD
 
-learnRate = 0.1	
+learnRate = 0.1
 weight_dec = 0
 drop_out = 0.2
 moment = 0.5
@@ -21,25 +21,25 @@ if len(sys.argv) == 5:
 	drop_out = float(sys.argv[3])
 	moment = float(sys.argv[4])
 
+trainingFeaturesArray, trainingTargetsArray = loadD.concatHalfHour(loadD.loadCSV("./data/Subject_1.csv","./data/list_1.csv"))
+OriginalFeatureCount = len(trainingFeaturesArray[0])
+trainingFeatures = torch.tensor(trainingFeaturesArray, dtype=torch.float)
+trainingTargets = torch.tensor(trainingTargetsArray, dtype=torch.float)
 
-trainingFeatures, trainingTargets = loadD.
-trainingFeatures = torch.tensor(trainingFeatures, dtype=torch.float)
-trainingTargets = torch.tensor(np.concatenate((batch1["labels"], batch2["labels"], batch3["labels"], batch4["labels"])), dtype=torch.float)
-testingFeatures = testbatch["data"]
-testingFeatures = torch.tensor(testingFeatures/255.0, dtype=torch.float)
-testingTargets = torch.tensor(testbatch["labels"], dtype=torch.float)
-
+testingFeaturesArray, testingTargetsArray = loadD.loadCSV("./data/Subject_1.csv","./data/list_1.csv")
+testingFeatures = torch.tensor(testingFeaturesArray, dtype=torch.float)
+testingTargets = torch.tensor(testingTargetsArray, dtype=torch.float)
 
 cuda = torch.cuda.is_available()
 print('Using PyTorch version:', torch.__version__, 'CUDA:', cuda)
 
 #LOAD DATA
-batchSize = 10000 #10000 examples per batch file
-
+batchSize = len(trainingFeaturesArray)
 train = torch.utils.data.TensorDataset(trainingFeatures, trainingTargets)
 train_loader = torch.utils.data.DataLoader(train, batch_size=batchSize, shuffle=True)
 
-test = torch.utils.data.TensorDataset(testingFeatures, testingTargets)
+batchSize = len(trainingFeaturesArray)
+test = torch.utils.data.TensorDataset(trainingFeatures, trainingTargets)
 validation_loader = torch.utils.data.DataLoader(test, batch_size=batchSize, shuffle=True)
 
 
@@ -53,7 +53,7 @@ for (X_train, y_train) in train_loader:
 class Net(nn.Module):
 	def __init__(self):
 		super(Net, self).__init__()
-		self.fc1 = nn.Linear(32*32*3, 50)
+		self.fc1 = nn.Linear(OriginalFeatureCount, 50)
 		self.fc1_drop = nn.Dropout(drop_out)
 		self.fc2 = nn.Linear(50, 50)
 		self.fc2_drop = nn.Dropout(drop_out)
@@ -97,7 +97,7 @@ def validate(loss_vector, accuracy_vector):
 		if cuda:
 			data, target = data.cuda(), target.cuda()
 		data, target = Variable(data, volatile=True), Variable(target)
-		data = Variable(data.view(-1, 32*32*3))
+		data = Variable(data.view(-1, OriginalFeatureCount))
 		output = model(data)
 		target = target.type(torch.LongTensor)
 		val_loss += F.nll_loss(output, target).data[0]
