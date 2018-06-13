@@ -82,6 +82,7 @@ def compileHalfHour(keys,features,indices):
 			compiledData[x][-1] = 1
 	Y = []
 	X = []
+	
 	for entry in compiledData:
 		Y.append(entry[-1])
 		X.append(entry[0:-1])
@@ -95,7 +96,7 @@ def concatHalfHour(keys,features,indices):
 	hypoevent = 0.0
 	lasttime = indices[-1]
 	halfHours = (lasttime//7)+1
-	for x in range(halfHours):
+	for x in range(0,halfHours):
 		concatData.append(emptyArray)
 		valueCount = 0.0
 		idx = 0
@@ -116,9 +117,12 @@ def concatHalfHour(keys,features,indices):
 					concatData[x][63] += keys[idx]
 			concatentry = indices[idx]%7
 			idx += 1	
+
 	Y = []
 	X = []
 	for entry in concatData:
+		#print entry
+		#print
 		Y.append(entry[-1])
 		X.append(entry[0:-1])
 	Xout = np.array(X)
@@ -171,12 +175,8 @@ def compileTestdata(dataFile):
 		compiledData[x][8] = compiledData[x][8]/7.0
 	Y = []
 	X = []
-	for entry in compiledData:
-		Y.append(entry[-1])
-		X.append(entry[0:-1])
-	Xout = np.array(X)
-	Yout = np.array(Y)
-	return Xout,Yout
+	Xout = np.array(compiledData)
+	return Xout
 
 '''
 oy,ox,ids = loadCSV("data/Subject_1.csv","data/list_1.csv")
