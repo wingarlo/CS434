@@ -9,24 +9,28 @@
 \begin{document}
 \maketitle
 \section{Feature formulation and preprocessing}
-\subsection{Features} What are the features you feed to your learning algorithm? Did you simply flatten the 7 rows into a vector for features? Did you transform or aggregate the given data to engineer your own features?
+\subsection{Features}
+The features we fed to our learning algorithms were the original nine features given: Time, Glucose, Slope, IOB, MOB, Morning, Afternoon, Evening, and Night. Before using the data for training, we converted the time to seconds. We then reduced the original data by combining every 30-minute window into one average vector. Some vectors are an average of less than a 30-minute window due to gaps in time. We condensed our data in this way so that our algorithms could learn patterns based on a 30-minute time span instead of individual readings. Similarly, when reading in the test data, we created a nine-feature vector for each row of 63 features. The vector is an average of the features of each data point in the window of seven data points provided in a row of the test instances.
 
 \subsection{Preprocessing}
-Did you pre-process your data in any way? This can be for the purpose of reducing dimension, or reducing noise, or balancing the class distribution. Be clear about what you exactly did. The criterion is to allow others to replicate your works.
+In addition to the data formatting previously mentioned, we reduced noise in the data before feeding them to our learning algorithms. While looking through the training data, we noticed that there were non-binary values under binary features such as Morning, Afternoon, Evening, and Night. To cast this data back to binary values, we replaced the values with 1 if it was greater than 1, and 0 otherwise. Reducing this noise was necessary to prevent the noisy values from having a large impact on learning.
 
 \section{Learning algorithms}
 \subsection{Algorithms explored}
-Provide a list of learning algorithms that you explored for this project. For each algorithm, briefly justify your rationale for choosing this algorithm.
 \subsubsection{Linear Regression}
 Since we are looking for a correlation between features such as time of day, blood sugar level, etc. and whether a subject has a hypoglycemic episode, linear regression will allow us to calculate a line that best fits the training data to predict the outcome based on the features.
 \subsubsection{K Nearest Neighbor}
 Similar to linear regression, the relationship of the features are telling of whether a subject will have a hypoglycemic episode. Therefore, we are using k nearest neighbor to find instances most similar to the test instances to predict the outcome.
+\subsubsection{One more}
 \subsection{Final models}
 What are the final models that produced your submitted test predictions?
+\textbf{K Nearest Neighbor: }k = 11
 
 \section{Parameter Tuning and Model Selection }
 \subsection{Parameter Tuning}
 What parameters did you tune for your models? How do you perform the parameter tuning?
+\subsubsection{K Nearest Neighbor}
+The parameter we tuned for our KNN model was k (the number of neighbors to compare a test point to). We chose the value k = 11 by using cross validation with the training sets. For each value of k from 1 to 20, we trained on most of the training data and used a 30-minute window validation set to get the results. We found that a value of k higher than 11 resulted in little improvement on error. k = 11 gave us the highest accuracy on average.
 
 \subsection{Model selection}
 How did you decide which models to use to produce the final predictions?  Do you use cross-validation or hold-out for model selection? When you split the data for validation, is it fully random or special consideration went into forming the folds? What criterion is used to select the models?
