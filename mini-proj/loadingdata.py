@@ -173,7 +173,7 @@ def compileTestdata(dataFile):
 	X = []
 	for entry in compiledData:
 		Y.append(entry[-1])
-		X.append(entry[0:9])
+		X.append(entry[0:-1])
 	Xout = np.array(X)
 	Yout = np.array(Y)
 	return Xout,Yout
@@ -182,6 +182,17 @@ def compileTestdata(dataFile):
 oy,ox,ids = loadCSV("data/Subject_1.csv","data/list_1.csv")
 conx,cony = concatHalfHour(oy,ox,ids)
 comx,comy = compileHalfHour(oy,ox,ids)
+
+print conx[1]
+print conx[1].size
+print conx.shape
+
+print comx[0]
+print comx[0].size
+print comx.shape
+
+cony,conx = loadTestData("data/general_test_instances.csv")
+comy,comx = compileTestData("data/general_test_instances.csv")
 
 print conx[1]
 print conx[1].size
