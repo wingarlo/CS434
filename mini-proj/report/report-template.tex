@@ -28,6 +28,8 @@ What are the final models that produced your submitted test predictions?
 
 \section{Parameter Tuning and Model Selection }
 What parameters did you tune for your models? How do you perform the parameter tuning?
+\subsection{Linear Regression}
+About the only thing you can do to tune the parameters of linear regression would be to normalize the variables or not. While there is a normalize function that is just a sigmoid function, we do not use it as we feel the results not using it are more accurate than when we did use it.
 \subsection{K Nearest Neighbor}
 The parameter we tuned for our KNN model was k (the number of neighbors to compare a test point to). We chose the value k = 11 by using cross validation with the training sets. For each value of k from 1 to 20, we trained on most of the training data and used a 30-minute window validation set to get the results. We found that a value of k higher than 11 resulted in little improvement on error. k = 11 gave us the highest accuracy on average.
 
